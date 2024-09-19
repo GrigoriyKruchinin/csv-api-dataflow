@@ -15,7 +15,9 @@ deployments:
   concurrency_limit: 1
   description: Data processing flow
   entrypoint: app/flows/data_flow.py
-  parameters: {}
+  parameters:
+    file_path: "/data/input.csv"
+    output_dir: "/data/output"
   work_pool:
     name: default-agent-pool
   enforce_parameter_schema: true

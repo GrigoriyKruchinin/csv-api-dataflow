@@ -9,10 +9,9 @@
     ```
 
 2. Создайте и активируйте виртуальное окружение:
-
     ```bash
     python -m venv venv
-    source venv/bin/activate  # Для Windows: venv\Scripts\activate
+    source venv/bin/activate
     ```
 
 3. Установите зависимости:
@@ -31,15 +30,21 @@
     ```
    Или вручную перейдите по адресу [http://127.0.0.1:4200](http://127.0.0.1:4200).
 
-5. Создайте и примените развертывание Flow:
+5. Запустите сам скрипт с определением и обслуживанием потока:
     ```bash
-    prefect deployment build app/flows/data_flow.py:data_processing_flow -n data_processing_flow
-    prefect deployment apply data_processing_flow-deployment.yaml
+    python app/flows/data_flow.py
     ```
+   Это запустит поток в режиме обслуживания (serve) и будет ожидать запуска заданий.
 
-6. Запустите развертывание:
+6. Запустите воркер (если используется Docker или другой механизм):
     ```bash
-    prefect deployment run data_processing_flow
+    prefect worker start --pool "test"
+    ```
+   Убедитесь, что воркер подключен к правильному пулу и готов к обработке заданий.
+
+7. Запустите развертывание:
+    ```bash
+    prefect deployment run data-processing-flow/test_flow
     ```
 
 ## Docker

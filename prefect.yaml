@@ -1,21 +1,38 @@
+# Welcome to your prefect.yaml file! You can use this file for storing and managing
+# configuration for deploying your flows. We recommend committing this file to source
+# control along with your flow code.
+
+# Generic metadata about this project
 name: csv-api-dataflow
 prefect-version: 3.0.0
 
-build: null
+# build section allows you to manage and build docker images
+build:
+  image: ehocalifornia/my-prefect-image:latest
 
-push: null
+# push section allows you to manage if and how this project is uploaded to remote locations
+push:
 
+# pull section allows you to provide instructions for cloning this project in remote locations
 pull:
 - prefect.deployments.steps.git_clone:
     repository: https://github.com/GrigoriyKruchinin/csv-api-dataflow.git
     branch: main
+    access_token:
 
+# the deployments section allows you to provide configuration for deploying flows
 deployments:
-- name: flow
+- name: default
+  version:
+  tags: []
   concurrency_limit: 1
-  description: Data processing flow
+  description:
   entrypoint: app/flows/data_flow.py:data_processing_flow
-  parameters: {"file_path": "/data/input.csv", "output_dir": "/data/output"}
+  parameters: {}
   work_pool:
-    name: default-agent-pool
+    name: test
+    work_queue_name:
+    job_variables:
+      docker_image: ehocalifornia/my-prefect-image:latest
   enforce_parameter_schema: true
+  schedules: []

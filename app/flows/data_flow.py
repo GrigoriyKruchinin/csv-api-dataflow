@@ -7,11 +7,12 @@ from datetime import timedelta
 import aiofiles
 from aiohttp import ClientSession, ClientTimeout
 
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 from prefect import flow, task, get_run_logger
 from prefect.tasks import task_input_hash
 import pandas as pd
 
+from app.config import INPUT_FILE_PATH, OUTPUT_DIR
 from app.utils.api_utils import fetch_data_from_api
 from app.utils.data_utils import extract_ticker
 from app.utils.notification_utils import send_telegram_message
@@ -51,7 +52,7 @@ async def fetch_api_data(symbol: str) -> dict:
     return api_data
 
 
-@task
+@task()
 async def save_to_json(data: dict, output_dir: str, symbol: str):
     logger = get_run_logger()
     logger.info(f"Saving data for {symbol} to JSON")
@@ -69,16 +70,21 @@ async def notify_completion(message: str):
     await send_telegram_message(message)
 
 
+async def fetch_and_save(symbol: str, output_dir: str):
+    api_data = await fetch_api_data(symbol)
+    await save_to_json(api_data, output_dir, symbol)
+
+
 @flow
-async def data_processing_flow(file_path: str, output_dir: str):
-    data = await load_data_from_csv(file_path)
+async def data_processing_flow():
+    data = await load_data_from_csv(INPUT_FILE_PATH)
     symbols = [extract_ticker(row) for _, row in data.iterrows() if extract_ticker(row)]
 
     loop = asyncio.get_running_loop()
     with ThreadPoolExecutor(max_workers=5) as executor:
         futures = [
             loop.run_in_executor(
-                executor, lambda s=symbol: asyncio.run(fetch_and_save(s, output_dir))
+                executor, lambda s=symbol: asyncio.run(fetch_and_save(s, OUTPUT_DIR))
             )
             for symbol in symbols
         ]
@@ -88,10 +94,5 @@ async def data_processing_flow(file_path: str, output_dir: str):
     await notify_completion("Data processing completed successfully.")
 
 
-async def fetch_and_save(symbol: str, output_dir: str):
-    api_data = await fetch_api_data(symbol)
-    await save_to_json(api_data, output_dir, symbol)
-
-
 if __name__ == "__main__":
-    asyncio.run(data_processing_flow("data/input.csv", "data/output"))
+    data_processing_flow.serve(name="test_flow")

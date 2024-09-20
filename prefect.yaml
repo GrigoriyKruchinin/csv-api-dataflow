@@ -22,7 +22,7 @@ pull:
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
-- name: default
+- name: test_flow
   version:
   tags: []
   concurrency_limit: 1

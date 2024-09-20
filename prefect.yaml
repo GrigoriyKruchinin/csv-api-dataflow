@@ -31,7 +31,7 @@ deployments:
   parameters: {}
   work_pool:
     name: test
-    work_queue_name:
+    work_queue_name: default
     job_variables:
       docker_image: ehocalifornia/my-prefect-image:latest
   enforce_parameter_schema: true

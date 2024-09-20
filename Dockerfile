@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 RUN pip install prefect
-
+RUN pip install aiofiles
 ENV PYTHONPATH=/app
 
 CMD ["prefect", "worker", "start", "--pool", "test"]

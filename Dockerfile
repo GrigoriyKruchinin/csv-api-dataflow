@@ -9,4 +9,6 @@ RUN pip install --upgrade pip && \
 
 COPY . .
 
-CMD ["python", "-m", "app/app/flows/data_flow.py"]
+ENV PYTHONPATH=/app
+
+CMD ["python", "/app/flows/data_flow.py"]

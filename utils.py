@@ -1,8 +1,8 @@
 import aiohttp
-from config import ALPHA_VANTAGE_API_KEY
 import pandas as pd
 from aiogram import Bot
-from config import TELEGRAM_API_TOKEN, TELEGRAM_CHAT_ID
+
+from config import ALPHA_VANTAGE_API_KEY, TELEGRAM_API_TOKEN, TELEGRAM_CHAT_ID
 
 bot = Bot(token=TELEGRAM_API_TOKEN)
 

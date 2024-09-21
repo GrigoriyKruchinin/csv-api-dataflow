@@ -9,8 +9,8 @@ from aiohttp import ClientSession, ClientTimeout
 from concurrent.futures import ThreadPoolExecutor
 from prefect import flow, task, get_run_logger
 from prefect.tasks import task_input_hash
+
 import pandas as pd
-from prefect.deployments.runner import DockerImage
 
 from config import INPUT_FILE_PATH, OUTPUT_DIR
 from utils import extract_ticker, fetch_data_from_api, send_telegram_message
@@ -92,11 +92,4 @@ async def data_processing_flow():
 
 
 if __name__ == "__main__":
-    data_processing_flow.deploy(
-        name="my-custom-dockerfile-deployment",
-        work_pool_name="my-docker-pool",
-        image=DockerImage(
-            name="prefecthq/prefect", tag="latest", dockerfile="Dockerfile"
-        ),
-        push=False,
-    )
+    asyncio.run(data_processing_flow())

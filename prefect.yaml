@@ -31,7 +31,7 @@ deployments:
   description: null
   schedule: {}
   flow_name: data-processing-flow
-  entrypoint: app/flows/data_flow.py:data_processing_flow
+  entrypoint: main.py:data_processing_flow
   parameters: {}
   work_pool:
     name: my-docker-pool

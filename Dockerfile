@@ -9,4 +9,4 @@ RUN pip install --upgrade pip && \
 
 COPY . .
 
-CMD ["python", "-m", "app/flows/data_flow.py"]
+CMD ["python", "-m", "app/flows/data_flow"]

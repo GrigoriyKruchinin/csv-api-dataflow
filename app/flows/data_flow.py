@@ -11,6 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from prefect import flow, task, get_run_logger
 from prefect.tasks import task_input_hash
 import pandas as pd
+from prefect.deployments.runner import DockerImage
 
 from app.config import INPUT_FILE_PATH, OUTPUT_DIR
 from app.utils.api_utils import fetch_data_from_api
@@ -95,4 +96,13 @@ async def data_processing_flow():
 
 
 if __name__ == "__main__":
-    data_processing_flow.serve(name="test_flow")
+    data_processing_flow.deploy(
+        name="my-custom-dockerfile-deployment",
+        work_pool_name="my-docker-pool",
+        image=DockerImage(
+            name="prefecthq/prefect",
+            tag="latest",
+            dockerfile="Dockerfile"
+        ),
+        push=False
+    )

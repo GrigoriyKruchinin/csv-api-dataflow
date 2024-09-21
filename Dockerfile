@@ -1,17 +1,12 @@
-FROM python:3.9-slim
+FROM python:3.11
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
 COPY . .
 
-RUN pip install prefect
-RUN pip install aiofiles
-ENV PYTHONPATH=/app
-
-CMD ["prefect", "worker", "start", "--pool", "test"]
-
-# Установите ограничение на память и CPU при запуске контейнера
-# docker run --memory="512m" --cpus="1.0" your_image
+CMD ["python", "app/flows/data_flow.py"]

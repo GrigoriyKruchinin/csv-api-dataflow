@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 import asyncio
 from datetime import timedelta
@@ -13,12 +12,9 @@ from prefect.tasks import task_input_hash
 import pandas as pd
 from prefect.deployments.runner import DockerImage
 
-from app.config import INPUT_FILE_PATH, OUTPUT_DIR
-from app.utils.api_utils import fetch_data_from_api
-from app.utils.data_utils import extract_ticker
-from app.utils.notification_utils import send_telegram_message
+from config import INPUT_FILE_PATH, OUTPUT_DIR
+from utils import extract_ticker, fetch_data_from_api, send_telegram_message
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 semaphore = asyncio.Semaphore(5)
 api_queue = asyncio.Queue(maxsize=5)
@@ -100,9 +96,7 @@ if __name__ == "__main__":
         name="my-custom-dockerfile-deployment",
         work_pool_name="my-docker-pool",
         image=DockerImage(
-            name="prefecthq/prefect",
-            tag="latest",
-            dockerfile="Dockerfile"
+            name="prefecthq/prefect", tag="latest", dockerfile="Dockerfile"
         ),
-        push=False
+        push=False,
     )
